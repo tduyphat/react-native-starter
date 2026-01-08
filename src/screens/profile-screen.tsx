@@ -1,14 +1,48 @@
-import * as React from 'react';
-import { Button } from 'react-native';
+import { Text, View } from 'react-native';
+import { useAuth } from '../contexts/auth-context';
+import Button from '../components/Button';
 
 interface ProfileScreenProps {
-  navigation: any; // You can replace 'any' with a more specific type if available
+  navigation: any;
 }
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
+  const { user, login, logout } = useAuth();
+
   return (
-    <Button title="Back Home" onPress={() => navigation.navigate('Home')} />
+    <View style={{ margin: 10, flex: 1, flexDirection: 'column' }}>
+      {user ? (
+        <>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 24 }}>Profile Information</Text>
+            <Text>ID: {user.id}</Text>
+            <Text>Username: {user.username}</Text>
+            <Text>First Name: {user.firstName}</Text>
+            <Text>Last Name: {user.lastName}</Text>
+            <Text>Email: {user.email}</Text>
+            <Text>Role: {user.role}</Text>
+            <Text>Age: {user.age}</Text>
+          </View>
+          <View>
+            <Button onPress={() => navigation.navigate('Home')}>
+              <Text>Switch to Home</Text>
+            </Button>
+
+            <Button title="Logout" onPress={() => logout()}>
+              <Text>Log out</Text>
+            </Button>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text style={{ flex: 1 }}>Welcome Guest</Text>
+          <Button title="Login" onPress={() => login('example', 'password')}>
+            <Text>Log in</Text>
+          </Button>
+        </>
+      )}
+    </View>
   );
 };
 
-export default ProfileScreen;
+export { ProfileScreen };
