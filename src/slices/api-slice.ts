@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppThunk } from '../thunks/app-thunk';
 import { apiService } from '../services/api-service';
 
 interface Photo {
-  albumId: number;
   id: number;
-  title: string;
-  url: string;
-  thumbnailUrl: string;
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+  priceUnit: string;
 }
 
 interface ApiState {
@@ -22,38 +22,46 @@ const initialState: ApiState = {
   error: null,
 };
 
+export const fetchApiData = createAsyncThunk<
+  Photo[],
+  string,
+  { rejectValue: string }
+>('api/fetchApiData', async (token, { rejectWithValue }) => {
+  try {
+    const response = await apiService.fetchData(token);
+    const list = response.data.data as Photo[];
+    return list;
+  } catch (err: any) {
+    const message =
+      err?.response?.data?.error?.message ?? err?.message ?? 'Unknown error';
+    return rejectWithValue(message);
+  }
+});
+
 export const apiSlice = createSlice({
   name: 'api',
   initialState,
-  reducers: {
-    fetchDataStart: state => {
-      state.loading = true;
-      state.error = null;
-    },
-    fetchDataSuccess: (state, action: PayloadAction<any[]>) => {
-      state.loading = false;
-      state.data = action.payload;
-    },
-    fetchDataFailure: (state, action: PayloadAction<string>) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(fetchApiData.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchApiData.fulfilled,
+        (state, action: PayloadAction<Photo[]>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(fetchApiData.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload ?? action.error.message ?? 'Request failed';
+      });
   },
 });
-
-export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } =
-  apiSlice.actions;
-
-export const fetchApiData = (): AppThunk => async dispatch => {
-  dispatch(fetchDataStart());
-  try {
-    const response = await apiService.fetchData();
-    dispatch(fetchDataSuccess(response.data));
-  } catch (error) {
-    let errorMessage = error ? String(error) : 'Unknown error';
-    dispatch(fetchDataFailure(errorMessage));
-  }
-};
 
 export const selectApiData = (state: { api: ApiState }) => state.api.data;
 export const selectApiLoading = (state: { api: ApiState }) => state.api.loading;

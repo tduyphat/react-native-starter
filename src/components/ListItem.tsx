@@ -3,25 +3,33 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 
 interface ListItemProps {
   item: {
-    title: string;
-    body: string;
-    imageUrl: string; // Adjust the property name based on your data structure
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+    price: number;
+    priceUnit: string;
   };
 }
 
 const ListItem: React.FC<ListItemProps> = ({ item }) => {
-    const placeholderImage = require('../assets/images/logo.png'); // Replace with your placeholder image
+  const placeholderImage = require('../assets/images/logo.png'); // Replace with your placeholder image
 
   return (
     <View style={styles.listItem}>
       <Image
-        source={item.imageUrl ? { uri: item.imageUrl } : placeholderImage}
+        source={item.image ? { uri: item.image } : placeholderImage}
         style={styles.image}
         resizeMode="cover"
       />
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Title: {item.title}</Text>
-        <Text style={styles.body}>{item.imageUrl}</Text>
+        <Text style={styles.title}>{item.name}</Text>
+        <Text style={styles.body}>{item.description}</Text>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+          <Text style={{ fontWeight: 'bold' }}>Price: </Text>
+          <Text style={styles.body}>{item.price}</Text>
+          <Text style={styles.body}>{item.priceUnit}</Text>
+        </View>
       </View>
     </View>
   );

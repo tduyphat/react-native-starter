@@ -27,17 +27,9 @@ const ListScreen: React.FC = () => {
               <Text>Error: {error}</Text>
             ) : (
               <FlatList
-                data={apiData}
+                data={apiData} // should be the array: response.data
                 keyExtractor={item => String(item.id)}
-                renderItem={({ item }) => (
-                  <ListItem
-                    item={{
-                      title: item.title,
-                      body: item.albumId.toString(),
-                      imageUrl: item.thumbnailUrl,
-                    }}
-                  ></ListItem>
-                )}
+                renderItem={({ item }) => <ListItem item={item} />}
               />
             )}
           </View>

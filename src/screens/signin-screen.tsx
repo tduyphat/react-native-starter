@@ -15,11 +15,11 @@ interface ISignInScreen {
 export const SignInScreen: FC<ISignInScreen> = ({ navigation }: any) => {
   const { login } = useAuth();
   const [email, setEmail] = useState<ITextInput>({
-    value: 'dinqtruong',
+    value: '',
     error: '',
   });
   const [password, setPassword] = useState<ITextInput>({
-    value: 'Qwertyuiop@!#$1091',
+    value: '',
     error: '',
   });
   function onPressSignIn() {

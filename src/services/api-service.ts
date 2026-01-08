@@ -8,7 +8,10 @@ const api = axios.create({
 });
 
 export const apiService = {
-  fetchData: () => axios.get('https://jsonplaceholder.typicode.com/photos'),
+  fetchData: (token: string) =>
+    api.get('/product', {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
   login: (username: string, password: string) =>
     api.post('/login', {
       username,
