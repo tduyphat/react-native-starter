@@ -34,7 +34,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const savedToken = await tokenStorage.get();
       if (!savedToken) return;
-
+      console.log("Token obtained from storage successfully")
       // Validate token by fetching profile
       const profile = await fetchProfileWithToken(savedToken);
       setUser(profile);
@@ -69,7 +69,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const res = await apiService.login(username, password);
       const newToken = res.data.data.token;
       await tokenStorage.set(newToken);
-
+      console.log("Token saved to storage successfully")
       const profile = await fetchProfileWithToken(newToken);
       console.log('profile', profile);
       setUser(profile);
